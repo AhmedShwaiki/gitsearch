@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Project Name
 
-## Getting Started
+### Overview
 
-First, run the development server:
+### Technologies Used
+
+#### Features
+
+- **Select**: Choose between 'repositories' and 'users' for the search type.
+- **Search**:
+  - For 'users': Displays a list of users matching the query with their avatars, names, and profile links.
+  - For 'repositories': Displays a list of repositories matching the query with tags/badges for file types, recent fork details, and links to the repositories.
+- **Tags/Badges**: Convert file types in the repository into tags/badges (e.g., Python, JavaScript).
+- **Fork Information**: Display usernames and avatars of the last 3 users who forked the repository, with links to their profiles.
+- **State Handling**: Manage loading, error, and empty states.
+- **Pagination**: Implement infinite scroll for paginated search results.
+
+### How to Run the Project
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/your-username/your-repository.git
+   cd your-repository
+   ```
+
+2. **Install Dependencies**:
+
+   ```bash
+   yarn install
+   ```
+
+3. **Set Up Environment Variables**:
+   Create a `.env` file in the root directory and add the necessary environment variables (e.g., GitHub API key).
+
+4. **Start the Development Server**:
+
+   ```bash
+   yarn start
+   ```
+
+   The application will be available at `http://localhost:3000`.
+
+### Running Tests
+
+#### Unit Tests
+
+To run the unit tests for this project, use the following command:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Integration and End-to-End (E2E) Tests
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To run the integration and E2E tests, use the following command:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+yarn test:e2e
+```
 
-## Learn More
+### Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+The project structure is as follows:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
+### Examples
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Search for Users
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Select 'users' from the dropdown.
+2. Enter a username (e.g., "octocat") and click "Search".
+3. View the list of matching users with their avatars, names, and profile links.
+
+#### Search for Repositories
+
+1. Select 'repositories' from the dropdown.
+2. Enter a repository name (e.g., "react") and click "Search".
+3. View the list of matching repositories with tags for file types, recent fork information, and repository links.
+
+### How to Contribute
+
+To contribute:
