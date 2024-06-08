@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
+    "@octokit/core": "^6.1.2",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
