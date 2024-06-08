@@ -1,23 +1,46 @@
 "use client"
 
-// TODO: remove User and make it typegeneric
-import Card, { User } from '@/app/ui/Card';
-import React, { useCallback, useState } from 'react'
-  // TODO: remove Option and make it typegeneric
-  ;
+import React, { useCallback, useState } from 'react';
 import Selector, { Option } from '@/app/ui/Selector';
-
 import Header from '@/app/ui/Header';
 import Input from '@/app/ui/Input';
-import debounce from '@/app/lib/debounce'
+import RepoCard from './ui/RepoCard';
+import UserCard from '@/app/ui/UserCard';
+import debounce from '@/app/lib/debounce';
 
 const options = [
   { id: 1, name: 'Repositories', unavailable: false },
   { id: 2, name: 'Users', unavailable: false },
 ];
 
-const generateMockUserData = (count: number): User[] => {
-  const mockUserData: User[] = [];
+function generateMockRepoData(count: number) {
+  const mockRepoData = [];
+
+  for (let i = 1; i <= count; i++) {
+    mockRepoData.push({
+      id: i,
+      name: `Repo ${i}`,
+      owner: {
+        login: `user${i}`,
+        avatar_url: "https://secure.gravatar.com/avatar/e7956084e75f239de85d3a31bc172ace?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+        html_url: `https://github.com/user${i}`,
+      },
+      html_url: `https://github.com/user${i}/repo${i}`,
+      description: `Description for repo ${i}`,
+      language: "JavaScript",
+      stargazers_count: Math.floor(Math.random() * 100),
+      forks_count: Math.floor(Math.random() * 100),
+      open_issues_count: Math.floor(Math.random() * 100),
+    });
+  }
+
+  return mockRepoData;
+}
+
+const mockRepoData = generateMockRepoData(100);
+
+const generateMockUserData = (count: number) => {
+  const mockUserData = [];
   for (let i = 1; i <= count; i++) {
     mockUserData.push({
       id: i,
@@ -63,9 +86,15 @@ const Home = () => {
           </div>
         </div>
         <div className="flex flex-col space-y-6 h-[720px] overflow-y-scroll py-2 px-6 overflow-x-hidden">
-          {mockUserData.map((user) => (
-            <Card key={user.id} data={user} />
-          ))}
+          {searchType.name === 'Repositories' ? (
+            mockRepoData.map(repo => (
+              <RepoCard key={repo.id} data={repo} />
+            ))
+          ) : (
+            mockUserData.map(user => (
+              <UserCard key={user.id} data={user} />
+            ))
+          )}
         </div>
       </div>
     </div>
