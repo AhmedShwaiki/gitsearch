@@ -1,6 +1,10 @@
 "use client"
 
-import React, { useCallback, useState } from 'react';
+// TODO: remove User and make it typegeneric
+import Card, { User } from '@/app/ui/Card';
+import React, { useCallback, useState } from 'react'
+  // TODO: remove Option and make it typegeneric
+  ;
 import Selector, { Option } from '@/app/ui/Selector';
 
 import Header from '@/app/ui/Header';
@@ -12,18 +16,20 @@ const options = [
   { id: 2, name: 'Users', unavailable: false },
 ];
 
-const fakeData = {
-  users: [
-    { id: 1, name: 'User One', avatar: 'https://via.placeholder.com/50', profile: '#' },
-    { id: 2, name: 'User Two', avatar: 'https://via.placeholder.com/50', profile: '#' },
-    { id: 3, name: 'User Three', avatar: 'https://via.placeholder.com/50', profile: '#' },
-  ],
-  repositories: [
-    { id: 1, name: 'Repo One', filetypes: ['JavaScript', 'Python'], forks: [{ id: 1, avatar: 'https://via.placeholder.com/30', profile: '#' }] },
-    { id: 2, name: 'Repo Two', filetypes: ['HTML', 'CSS'], forks: [{ id: 2, avatar: 'https://via.placeholder.com/30', profile: '#' }] },
-    { id: 3, name: 'Repo Three', filetypes: ['Java', 'Go'], forks: [{ id: 3, avatar: 'https://via.placeholder.com/30', profile: '#' }] },
-  ]
+const generateMockUserData = (count: number): User[] => {
+  const mockUserData: User[] = [];
+  for (let i = 1; i <= count; i++) {
+    mockUserData.push({
+      id: i,
+      name: `user${i}`,
+      avatar: "https://secure.gravatar.com/avatar/25c7c18223fb42a4c6ae1c8db6f50f9b?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+      profile: `https://github.com/user${i}`,
+    });
+  }
+  return mockUserData;
 };
+
+const mockUserData = generateMockUserData(100);
 
 const Home = () => {
   const [searchType, setSearchType] = useState<Option>(options[0]);
@@ -48,13 +54,18 @@ const Home = () => {
     <div className="flex min-h-screen flex-col items-center justify-between p-8 bg-gradient-to-b from-background-start to-background-end text-foreground">
       <div className="w-full max-w-5xl">
         <Header />
-        <div className="flex w-full max-w-5xl mb-8 space-x-4">
+        <div className="flex justify-around w-full max-w-5xl mb-8 space-x-5">
           <div className="w-2/3">
             <Input placeholder='Search Github' onChange={handleInputChange} />
           </div>
-          <div className="w-1/3">
-            <Selector options={options} selected={searchType} onSelect={setSearchType} />
+          <div className="z-10">
+            <Selector placeholder={'Search by'} options={options} selected={searchType} onSelect={setSearchType} />
           </div>
+        </div>
+        <div className="flex flex-col space-y-6 h-[720px] overflow-y-scroll py-2 px-6 overflow-x-hidden">
+          {mockUserData.map((user) => (
+            <Card key={user.id} data={user} />
+          ))}
         </div>
       </div>
     </div>

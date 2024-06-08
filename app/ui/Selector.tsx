@@ -11,9 +11,10 @@ interface SelectorProps {
     options: Option[];
     selected: Option;
     onSelect: (option: Option) => void;
+    placeholder?: string;
 }
 
-function Selector({ options, selected, onSelect }: SelectorProps) {
+function Selector({ options, selected, onSelect, placeholder }: SelectorProps) {
     const [selectedOption, setSelectedOption] = useState<Option>(selected);
 
     useEffect(() => {
@@ -29,7 +30,7 @@ function Selector({ options, selected, onSelect }: SelectorProps) {
         <Listbox value={selectedOption} onChange={handleChange}>
             <div className="relative">
                 <ListboxButton className="p-2 border border-foreground rounded text-left w-56 bg-primary text-foreground hover:bg-secondary transition-colors duration-200">
-                    {`Search by ${selectedOption.name}`}
+                    {`${placeholder} ${selectedOption.name}`}
                 </ListboxButton>
                 <Transition
                     enter="transition duration-200 ease-out"
@@ -39,7 +40,7 @@ function Selector({ options, selected, onSelect }: SelectorProps) {
                     leaveFrom="transform scale-100 opacity-100"
                     leaveTo="transform scale-95 opacity-0"
                 >
-                    <ListboxOptions className="mt-1 border border-foreground rounded shadow-lg w-56 bg-primary backdrop-blur-lg">
+                    <ListboxOptions className="absolute mt-1 border border-foreground rounded shadow-lg w-56 bg-primary backdrop-blur-lg">
                         {options.map((option) => (
                             <ListboxOption
                                 key={option.id}

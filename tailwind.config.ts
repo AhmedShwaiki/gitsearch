@@ -13,7 +13,8 @@ module.exports = {
         accent: '#17414d', 
         error: '#ff5a5a',
         loading: '#ffd700',
-        disabled: '9CA38F'
+        disabled: '9CA38F',
+        border: '#1e293b'
       },
       blur: {
         sm: '4px',
