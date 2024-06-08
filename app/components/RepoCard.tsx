@@ -2,24 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link'
 import React from 'react';
 import Tag from './Tag';
-
-interface Owner {
-    login: string;
-    avatar_url: string;
-    html_url: string;
-}
-
-export interface Repository {
-    id: number;
-    name: string;
-    owner: Owner;
-    html_url: string;
-    description: string;
-    language: string;
-    stargazers_count: number;
-    forks_count: number;
-    open_issues_count: number;
-}
+import { Repository } from '@/app/lib/types';
 
 interface CardProps<T> {
     data: T;

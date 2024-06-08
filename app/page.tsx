@@ -1,77 +1,130 @@
 "use client"
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Repository, SearchType, User } from '@/app/lib/types';
 import Selector, { Option } from '@/app/components/Selector';
+import { generateMockRepoData, generateMockUserData } from './lib/data';
+
 import Header from '@/app/components/Header';
 import Input from '@/app/components/Input';
-import RepoCard from './components/RepoCard';
+import RepoCard from '@/app/components/RepoCard';
+import { SEARCH_TYPES } from '@/app/lib/constants';
 import UserCard from '@/app/components/UserCard';
 import debounce from '@/app/utils/debounce';
 
-const options = [
-    { id: 1, name: 'Repositories', unavailable: false },
-    { id: 2, name: 'Users', unavailable: false },
-];
+const searchUsers = async ({ query, page }: { query: string; page: number }) => {
+    const response = generateMockUserData()
+    console.log(response);
 
-function generateMockRepoData(count: number) {
-    const mockRepoData = [];
-
-    for (let i = 1; i <= count; i++) {
-        mockRepoData.push({
-            id: i,
-            name: `Repo ${i}`,
-            owner: {
-                login: `user${i}`,
-                avatar_url: "https://secure.gravatar.com/avatar/e7956084e75f239de85d3a31bc172ace?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
-                html_url: `https://github.com/user${i}`,
-            },
-            html_url: `https://github.com/user${i}/repo${i}`,
-            description: `Description for repo ${i}`,
-            language: "JavaScript",
-            stargazers_count: Math.floor(Math.random() * 100),
-            forks_count: Math.floor(Math.random() * 100),
-            open_issues_count: Math.floor(Math.random() * 100),
-        });
-    }
-
-    return mockRepoData;
-}
-
-const mockRepoData = generateMockRepoData(100);
-
-const generateMockUserData = (count: number) => {
-    const mockUserData = [];
-    for (let i = 1; i <= count; i++) {
-        mockUserData.push({
-            id: i,
-            name: `user${i}`,
-            avatar: "https://secure.gravatar.com/avatar/25c7c18223fb42a4c6ae1c8db6f50f9b?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
-            profile: `https://github.com/user${i}`,
-        });
-    }
-    return mockUserData;
+    // const response = await GitClient.searchByUsername({ username: query, page });
+    return {
+        items: response.items.map((item: any) => ({
+            id: item.id,
+            name: item.login,
+            avatar: item.avatarUrl,
+            profile: item.htmlUrl,
+        })),
+        totalCount: response.totalCount,
+        incompleteResults: response.incompleteResults,
+    };
 };
 
-const mockUserData = generateMockUserData(100);
+const searchRepositories = async ({ query, page }: { query: string; page: number }) => {
+    const response = generateMockRepoData(100)
+
+    // const response = await GitClient.searchByRepoName({ repoName: query, page });
+    return {
+        items: response.items.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            owner: item.owner.login,
+            avatar: item.owner.avatarUrl,
+            description: item.description,
+            language: item.language,
+            stargazersCount: item.stargazersCount,
+            forksCount: item.forksCount,
+            openIssuesCount: item.openIssuesCount,
+        })),
+        totalCount: response.totalCount,
+        incompleteResults: response.incompleteResults,
+    };
+};
+
+const CHARACTER_SEARCH_LIMIT = 3;
+const DEBOUNCE_DELAY = 300;
+const searchOptions = [
+    { id: 1, name: SEARCH_TYPES.USERS },
+    { id: 2, name: SEARCH_TYPES.REPOSITORIES },
+];
+
+
+const createSearchByTypeFunction = (searchType: SearchType) => {
+    const searchFunctions = {
+        [SEARCH_TYPES.USERS]: searchUsers,
+        [SEARCH_TYPES.REPOSITORIES]: searchRepositories,
+    };
+
+    const searchFunction = searchFunctions[searchType];
+    if (!searchFunction) {
+        throw new Error("Invalid search type");
+    }
+    return searchFunction;
+};
+
 
 const Home = () => {
-    const [searchType, setSearchType] = useState<Option>(options[0]);
-    const [query, setQuery] = useState('');
+    const [searchType, setSearchType] = useState<Option>(searchOptions[0]);
+    const [query, setQuery] = useState<string>('');
+    const [inputValue, setInputValue] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [results, setResults] = useState<User[] | Repository[]>([]);
 
-    const handleDebouncedChange = debounce((value: string) => {
-        const trimmedValue = value.trim();
-        if (!trimmedValue || trimmedValue.length < 3) {
+    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        setLoading(false);
+        setError('');
+
+        setInputValue(newValue);
+
+        const trimmedValue = newValue.trim();
+        // TODO: create string validation function
+        if (trimmedValue.length >= CHARACTER_SEARCH_LIMIT) {
+            debounce(() => setQuery(trimmedValue), DEBOUNCE_DELAY)();
+        }
+    }, []);
+
+    const handleSelectSearchTypeChange = useCallback((selectedOption: Option) => {
+        setResults([]);
+        setLoading(false);
+        setError('');
+        setSearchType(selectedOption);
+        setInputValue('');
+        setQuery('');
+    }, []);
+
+    useEffect(() => {
+        if (query.length < CHARACTER_SEARCH_LIMIT) {
             return;
         }
 
-        setQuery(trimmedValue);
-        console.log('Searching for:', trimmedValue);
-        // Your API call logic here
-    }, 300)
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const searchFunction = createSearchByTypeFunction(searchType.name as SearchType);
+                const response = await searchFunction({ query, page: 1 });
 
-    const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        handleDebouncedChange(event.target.value);
-    }, [handleDebouncedChange]);
+                setResults(response.items);
+            } catch (err) {
+                setError('Error fetching data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [query, searchType]);
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-between p-8 bg-gradient-to-b from-background-start to-background-end text-foreground">
@@ -79,23 +132,24 @@ const Home = () => {
                 <Header />
                 <div className="flex justify-around w-full max-w-5xl mb-8 space-x-5">
                     <div className="w-2/3">
-                        <Input placeholder='Search Github' onChange={handleInputChange} />
+                        <Input value={inputValue} placeholder={`Enter ${CHARACTER_SEARCH_LIMIT} or more characters`} onChange={handleInputChange} />
                     </div>
                     <div className="z-10">
-                        <Selector placeholder={'Search by'} options={options} selected={searchType} onSelect={setSearchType} />
+                        <Selector placeholder={'Search by'} options={searchOptions} selected={searchType} onSelect={handleSelectSearchTypeChange} />
                     </div>
                 </div>
+
                 <div className="flex flex-col space-y-6 h-[720px] overflow-y-scroll py-2 px-6 overflow-x-hidden">
-                    {searchType.name === 'Repositories' ? (
-                        mockRepoData.map(repo => (
-                            <RepoCard key={repo.id} data={repo} />
-                        ))
-                    ) : (
-                        mockUserData.map(user => (
-                            <UserCard key={user.id} data={user} />
-                        ))
-                    )}
+                    {searchType.name === SEARCH_TYPES.USERS && (results as User[]).map(user => (
+                        <UserCard key={user.id} data={user} />
+                    ))}
+                    {searchType.name === SEARCH_TYPES.REPOSITORIES && (results as Repository[]).map(repo => (
+                        <RepoCard key={repo.id} data={repo} />
+                    ))}
                 </div>
+
+                {error && <div className="text-red-500">{error}</div>}
+                {loading && <div className="text-red-500">Loading...</div>}
             </div>
         </div>
     );

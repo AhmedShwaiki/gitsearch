@@ -22,8 +22,8 @@ function Selector({ options, selected, onSelect, placeholder }: SelectorProps) {
     }, [selected]);
 
     const handleChange = (option: Option) => {
-        setSelectedOption(option);
         onSelect(option);
+        setSelectedOption(option);
     };
 
     return (

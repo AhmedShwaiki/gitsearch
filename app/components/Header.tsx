@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const Header = () => {
+function Header() {
     return (
         <div className="flex flex-col items-center mb-8">
             <div className="flex items-center">

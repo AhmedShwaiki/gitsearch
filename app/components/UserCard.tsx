@@ -1,16 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link'
 import React from 'react';
+import { User } from '@/app/lib/types';
 
 interface CardProps<T> {
     data: T;
-}
-
-interface User {
-    id: number;
-    name: string;
-    avatar: string;
-    profile: string;
 }
 
 function UserCard<T extends User>({ data }: CardProps<T>) {
