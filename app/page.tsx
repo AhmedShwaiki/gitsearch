@@ -44,14 +44,17 @@ const Home = () => {
     [],
   );
 
-  const handleSelectSearchTypeChange = useCallback((selectedOption: SearchOption) => {
-    setResults([]);
-    setLoading(false);
-    setError('');
-    setSearchType(selectedOption);
-    setInputValue('');
-    setQuery('');
-  }, []);
+  const handleSelectSearchTypeChange = useCallback(
+    (selectedOption: SearchOption) => {
+      setResults([]);
+      setLoading(false);
+      setError('');
+      setSearchType(selectedOption);
+      setInputValue('');
+      setQuery('');
+    },
+    [],
+  );
 
   useEffect(() => {
     if (query.length < CHARACTER_SEARCH_LIMIT) {
@@ -110,13 +113,14 @@ const Home = () => {
             />
           </div>
         </div>
-
-        <SearchList
-          loading={loading}
-          error={error}
-          searchType={searchType}
-          results={results}
-        />
+        {inputValue && (
+          <SearchList
+            loading={loading}
+            error={error}
+            searchType={searchType}
+            results={results}
+          />
+        )}
       </div>
     </div>
   );
