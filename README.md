@@ -1,11 +1,15 @@
 ## GitSearch
+
 ![logo-readme](https://github.com/AhmedShwaiki/gitsearch/assets/79656062/daeeba56-c7fd-419a-8403-e88f8f59e1f0)
+
 ## [Check out the app on vercel](https://gitsearch-silk.vercel.app/)
 
 ### Overview
+
 GitSearch is a React application built with Next.js that allows users to search for GitHub users and repositories using the GitHub API. The application provides an intuitive and responsive UI for displaying search results with infinite scrolling.
 
 ### Technologies Used
+
 - [React with Next.js](https://nextjs.org/)
 - [HeadlessUI components library](https://headlessui.com/)
 - [Tailwind CSS for styling](https://tailwindcss.com/docs/adding-custom-styles)
@@ -51,14 +55,6 @@ To run the unit tests for this project, use the following command:
 yarn test
 ```
 
-#### Integration and End-to-End (E2E) Tests
-
-To run the integration and E2E tests, use the following command:
-
-```bash
-yarn test:e2e
-```
-
 ### Project Structure
 
 The project structure is as follows:
@@ -74,6 +70,7 @@ app/                    # Main source code directory
 ### How to Contribute
 
 To contribute:
+
 1. Implement a Virtual list for improved performance with large data sets. Refer to [this npm package](https://www.npmjs.com/package/rc-virtual-list).
 2. Enhance error handling and user feedback.
 3. Check any @TODO comments.
