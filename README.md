@@ -1,4 +1,5 @@
 ## GitSearch
+![logo-readme](https://github.com/AhmedShwaiki/gitsearch/assets/79656062/daeeba56-c7fd-419a-8403-e88f8f59e1f0)
 
 ### Overview
 GitSearch is a React application built with Next.js that allows users to search for GitHub users and repositories using the GitHub API. The application provides an intuitive and responsive UI for displaying search results with infinite scrolling.
