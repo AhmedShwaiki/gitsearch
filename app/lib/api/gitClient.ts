@@ -55,16 +55,21 @@ class GitClient<T> {
   async searchByUsername({
     username,
     page = 1,
+    perPage,
     sortBy,
     order,
   }: {
     username: string;
     page?: number;
+    perPage?: number;
     sortBy?: string;
     order?: string;
   }): Promise<Pagination<User>> {
     const queryParams = new URLSearchParams();
     queryParams.append('q', username);
+
+    if (perPage) queryParams.append('per_page', perPage.toString());
+
     queryParams.append('page', page.toString());
 
     if (sortBy) queryParams.append('sort', sortBy);
@@ -78,8 +83,6 @@ class GitClient<T> {
       },
     });
     const data = toCamelCase(response.data);
-    // const response = generateMockUserData()
-    // const data = toCamelCase(response);
 
     return {
       items: data.items.map((item: any) => ({
@@ -96,16 +99,21 @@ class GitClient<T> {
   async searchByRepoName({
     repoName,
     page = 1,
+    perPage,
     sortBy,
     order,
   }: {
     repoName: string;
     page?: number;
+    perPage?: number;
     sortBy?: string;
     order?: string;
   }): Promise<Pagination<Repository>> {
     const queryParams = new URLSearchParams();
     queryParams.append('q', repoName);
+
+    if (perPage) queryParams.append('per_page', perPage.toString());
+
     queryParams.append('page', page.toString());
 
     if (sortBy) queryParams.append('sort', sortBy);
@@ -119,8 +127,7 @@ class GitClient<T> {
       },
     });
     const data = toCamelCase(response.data);
-    // const response = generateMockRepoData();
-    // const data = toCamelCase(response);
+
     return {
       items: data.items.map((item: any) => ({
         id: item.id,
@@ -172,7 +179,6 @@ class GitClient<T> {
         }
       }
       `;
-    // const response = generateMockGetRepoDetails()
 
     const response = await (this.client as any).graphql(GET_REPO_DETAILS, {
       owner,

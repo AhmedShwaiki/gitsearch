@@ -19,7 +19,11 @@ function UserCard<T extends User>({ data }: CardProps<T>) {
       />
       <div>
         <h2 className="text-h2">{data.name}</h2>
-        <Link href={data.profile} className="text-accent hover:text-foreground">
+        <Link
+          target="_blank"
+          href={data.profile}
+          className="text-accent hover:text-foreground"
+        >
           Profile
         </Link>
       </div>

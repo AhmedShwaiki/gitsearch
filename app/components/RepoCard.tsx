@@ -30,7 +30,7 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
       });
       setRepoDetails(details);
     } catch (err) {
-      setError('Error fetching repository details');
+      setError('Error loading repository details');
     } finally {
       setIsTagLoading(false);
     }
@@ -39,7 +39,6 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
   const languagesTagOptions =
     repoDetails?.languages.map(language => ({
       label: language,
-      // TODO: make this a link to a language wiki
       href: `#`,
     })) || [];
 
@@ -52,7 +51,11 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
   return (
     <div className="rounded border border-border bg-gradient-to-r from-primary to-secondary p-4 shadow-sm shadow-border duration-200 hover:scale-105 hover:border-accent">
       <h2 className="mb-2 text-h2">
-        <Link href={data.url} className="text-link hover:text-foreground">
+        <Link
+          target="_blank"
+          href={data.url}
+          className="text-link hover:text-foreground"
+        >
           {data.name}
         </Link>
       </h2>
@@ -84,12 +87,12 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
           onClick={fetchRepoDetails}
         />
         <Tag text={`Issues 🐛 ${data.openIssuesCount}`} options={[]} disabled />
-        {error && <p className="text-error text-center">{error}</p>}
+        {error && <p className="text-center text-error">{error}</p>}
         {isTagLoading && (
           <div
-            className="self-center h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            role="status">
-          </div>
+            className="h-5 w-5 animate-spin self-center rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            role="status"
+          ></div>
         )}
       </div>
     </div>

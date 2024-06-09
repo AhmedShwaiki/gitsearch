@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { Repository, User, SearchOption } from '@/app/lib/types';
-import Selector from '@/app/components/Selector';
+import React, { use, useCallback, useEffect, useState } from 'react';
+import { Repository, SearchOption, User } from '@/app/lib/types';
 
 import GitClient from './lib/api/gitClient';
 import Header from '@/app/components/Header';
 import Input from '@/app/components/Input';
-import SearchList from '@/app/components/SearchList';
-
 import { SEARCH_TYPES } from '@/app/lib/constants';
+import SearchList from '@/app/components/SearchList';
+import Selector from '@/app/components/Selector';
 import debounce from '@/app/utils/debounce';
 
 const CHARACTER_SEARCH_LIMIT = 3;
@@ -26,6 +25,8 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<User[] | Repository[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,8 @@ const Home = () => {
       setSearchType(selectedOption);
       setInputValue('');
       setQuery('');
+      setCurrentPage(1);
+      setHasMoreResults(true);
     },
     [],
   );
@@ -69,18 +72,22 @@ const Home = () => {
         if (searchType.name === SEARCH_TYPES.USERS) {
           response = await GitClient.searchByUsername({
             username: query,
-            page: 1,
+            page: currentPage,
+            perPage: 20,
           });
         } else if (searchType.name === SEARCH_TYPES.REPOSITORIES) {
           response = await GitClient.searchByRepoName({
             repoName: query,
-            page: 1,
+            page: currentPage,
+            perPage: 20,
           });
         }
 
         if (response) {
-          setResults(response.items);
-          // TODO: implement pagination
+          setResults(prevResults => [...prevResults, ...response.items]);
+          setHasMoreResults(!response.incompleteResults);
+        } else {
+          setError('No results found');
         }
       } catch (err) {
         setError('Error loading data. Please try again');
@@ -90,7 +97,16 @@ const Home = () => {
     };
 
     fetchData();
-  }, [query, searchType]);
+  }, [query, searchType, currentPage]);
+
+  const handleOnReachScrollLimit = useCallback(() => {
+    if (!loading && hasMoreResults) {
+      debounce(
+        () => setCurrentPage(prevPage => prevPage + 1),
+        DEBOUNCE_DELAY,
+      )();
+    }
+  }, [loading, hasMoreResults]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between bg-gradient-to-b from-background-start to-background-end p-8 text-foreground">
@@ -119,6 +135,7 @@ const Home = () => {
             error={error}
             searchType={searchType}
             results={results}
+            onReachScrollLimit={handleOnReachScrollLimit}
           />
         )}
       </div>

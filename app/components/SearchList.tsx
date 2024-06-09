@@ -1,7 +1,7 @@
-import { Repository, User, SearchOption } from '@/app/lib/types';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { Repository, SearchOption, User } from '@/app/lib/types';
 
 import Image from 'next/image';
-import React from 'react';
 import RepoCard from '@/app/components/RepoCard';
 import { SEARCH_TYPES } from '@/app/lib/constants';
 import UserCard from '@/app/components/UserCard';
@@ -10,15 +10,46 @@ interface SearchListProps {
   loading: boolean;
   error: string | null;
   searchType: SearchOption;
-  // TODO: make the list type agnostic
   results: User[] | Repository[];
+  onReachScrollLimit: () => void;
 }
 
-function SearchList({ loading, error, searchType, results }: SearchListProps) {
+function SearchList({
+  loading,
+  error,
+  searchType,
+  results,
+  onReachScrollLimit,
+}: SearchListProps) {
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  const handleScroll = useCallback(() => {
+    if (listRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 /* scrollOffset */) {
+        onReachScrollLimit();
+      }
+    }
+  }, [onReachScrollLimit]);
+
+  useEffect(() => {
+    const refCurrent = listRef.current;
+    if (refCurrent) {
+      refCurrent.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (refCurrent) {
+        refCurrent.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [handleScroll]);
+
   return (
     <div
+      ref={listRef}
       className={
-        'flex h-[660px] flex-col space-y-6 overflow-x-hidden px-6 py-2'
+        'flex h-[calc(100vh-250px)] flex-col space-y-6 overflow-y-auto overflow-x-hidden px-6 py-2'
       }
     >
       {loading &&
@@ -35,6 +66,7 @@ function SearchList({ loading, error, searchType, results }: SearchListProps) {
             </div>
           </div>
         ))}
+
       {error && (
         <div className="flex h-full flex-col items-center justify-center">
           <Image
@@ -46,15 +78,17 @@ function SearchList({ loading, error, searchType, results }: SearchListProps) {
           <h1 className="mt-4 text-2xl font-bold text-error">{error}</h1>
         </div>
       )}
-      {!loading &&
-        !error &&
+
+      {!error &&
         searchType.name === SEARCH_TYPES.USERS &&
-        (results as User[]).map(user => <UserCard key={user.id} data={user} />)}
-      {!loading &&
-        !error &&
+        (results as User[]).map((user, index) => (
+          <UserCard key={`${user.id}-item${index}`} data={user} />
+        ))}
+
+      {!error &&
         searchType.name === SEARCH_TYPES.REPOSITORIES &&
-        (results as Repository[]).map(repo => (
-          <RepoCard key={repo.id} data={repo} />
+        (results as Repository[]).map((repo, index) => (
+          <RepoCard key={`${repo.id}-item${index}`} data={repo} />
         ))}
     </div>
   );
