@@ -49,7 +49,7 @@ GitSearch is a React application built with Next.js that allows users to search 
 
 #### Unit Tests
 
-To run the unit tests for this project, use the following command:
+To run the unit tests for this project, you will need to add tests in __test__ folder then use the following command:
 
 ```bash
 yarn test
@@ -75,3 +75,5 @@ To contribute:
 2. Enhance error handling and user feedback.
 3. Check any @TODO comments.
 4. For MobX integration, refer to the [MobX documentation](https://mobx.js.org/README.html).
+5. Setup and add integration tests
+6. Add unit tests
