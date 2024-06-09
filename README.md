@@ -49,10 +49,18 @@ GitSearch is a React application built with Next.js that allows users to search 
 
 #### Unit Tests
 
-To run the unit tests for this project, you will need to add tests in **test** folder then use the following command:
+To run the unit tests for this project
 
 ```bash
-yarn test
+yarn run test
+```
+
+#### E2E Tests
+
+To run the integration tests for this project
+
+```bash
+yarn run cypress:open
 ```
 
 ### Project Structure
