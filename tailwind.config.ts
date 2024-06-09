@@ -11,8 +11,9 @@ module.exports = {
         accent: '#17414d',
         error: '#ff5a5a',
         loading: '#ffd700',
-        disabled: '#9CA38F',
+        disabled: '#585c51',
         border: '#1e293b',
+        link: '#299693',
       },
       blur: {
         sm: '4px',

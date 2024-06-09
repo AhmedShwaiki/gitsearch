@@ -52,7 +52,7 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
   return (
     <div className="rounded border border-border bg-gradient-to-r from-primary to-secondary p-4 shadow-sm shadow-border duration-200 hover:scale-105 hover:border-accent">
       <h2 className="mb-2 text-h2">
-        <Link href={data.url} className="text-accent hover:text-foreground">
+        <Link href={data.url} className="text-link hover:text-foreground">
           {data.name}
         </Link>
       </h2>
@@ -67,25 +67,30 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
         />
         <Link
           href={data.owner.profile}
-          className="text-accent hover:text-foreground"
+          className="text-link hover:text-foreground"
         >
           {data.owner.name}
         </Link>
       </div>
       <div className="flex space-x-4">
         <Tag
-          text={`Languages 🌐`}
+          text={'Languages 🌐'}
           options={languagesTagOptions}
           onClick={fetchRepoDetails}
-          loading={isTagLoading}
         />
         <Tag
           text={`Forks 🍴 ${data.forksCount}`}
           options={forksTagOptions}
           onClick={fetchRepoDetails}
-          loading={isTagLoading}
         />
-        <Tag text={`Issues 🐛 ${data.openIssuesCount}`} options={[]} />
+        <Tag text={`Issues 🐛 ${data.openIssuesCount}`} options={[]} disabled />
+        {error && <p className="text-error text-center">{error}</p>}
+        {isTagLoading && (
+          <div
+            className="self-center h-5 w-5 animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            role="status">
+          </div>
+        )}
       </div>
     </div>
   );

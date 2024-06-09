@@ -13,43 +13,42 @@ interface TagProps {
   text: string;
   options: { label: string; href: string }[];
   onClick?: () => void;
-  loading?: boolean;
+  disabled?: boolean
 }
 
-function Tag({ text, options, onClick, loading }: TagProps) {
+function Tag({ text, options, onClick, disabled }: TagProps) {
   return (
     <Menu as="div" className="relative text-left">
       <MenuButton
         onClick={onClick}
-        className={`cursor-pointer rounded border border-accent bg-accent px-2 py-1 text-small transition-colors duration-200 hover:border-foreground data-[open]:bg-secondary`}
-        disabled={loading}
+        className={'cursor-pointer rounded border border-accent bg-accent px-2 py-1 text-small transition-colors duration-200  data-[open]:bg-secondary data-[disabled]:bg-disabled data-[disabled]:disabled'}
+        disabled={disabled}
       >
         {text}
-        {loading && (
-          <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-disabled opacity-75" />
-        )}
       </MenuButton>
-      <Transition
-        enter="transition duration-200 ease-out"
-        enterFrom="transform scale-95 opacity-0"
-        enterTo="transform scale-100 opacity-100"
-        leave="transition duration-200 ease-out"
-        leaveFrom="transform scale-100 opacity-100"
-        leaveTo="transform scale-95 opacity-0"
-      >
-        <MenuItems className="absolute mt-2 w-56 origin-top-right rounded border border-border bg-primary shadow-lg">
-          {options.map((option, index) => (
-            <MenuItem key={index} as="div">
-              <Link
-                href={option.href}
-                className="block px-4 py-2 text-sm text-foreground transition-colors duration-200 hover:bg-secondary data-[active]:bg-accent"
-              >
-                {option.label}
-              </Link>
-            </MenuItem>
-          ))}
-        </MenuItems>
-      </Transition>
+      {options.length > 0 &&
+        <Transition
+          enter="transition duration-200 ease-out"
+          enterFrom="transform scale-95 opacity-0"
+          enterTo="transform scale-100 opacity-100"
+          leave="transition duration-200 ease-out"
+          leaveFrom="transform scale-100 opacity-100"
+          leaveTo="transform scale-95 opacity-0"
+        >
+          <MenuItems className="absolute mt-2 w-56 origin-top-right rounded border border-border bg-primary shadow-lg">
+            {options.map((option, index) => (
+              <MenuItem key={index} as="div">
+                <Link
+                  href={option.href}
+                  className="block px-4 py-2 text-sm text-foreground transition-colors duration-200 hover:bg-secondary data-[active]:bg-accent"
+                >
+                  {option.label}
+                </Link>
+              </MenuItem>
+            ))}
+          </MenuItems>
+        </Transition>
+      }
     </Menu>
   );
 }
