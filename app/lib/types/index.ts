@@ -1,20 +1,4 @@
-export interface Owner {
-  login: string;
-  avatar_url: string;
-  html_url: string;
-}
-
-export interface Repository {
-  id: number;
-  name: string;
-  owner: Owner;
-  html_url: string;
-  description: string;
-  language: string;
-  stargazers_count: number;
-  forks_count: number;
-  open_issues_count: number;
-}
+export type SearchType = 'Users' | 'Repositories';
 
 export interface User {
   id: number;
@@ -23,4 +7,29 @@ export interface User {
   profile: string;
 }
 
-export type SearchType = 'Users' | 'Repositories';
+export interface Fork {
+  id: string;
+  url: string;
+  owner: User;
+}
+
+export interface Repository {
+  id: number;
+  name: string;
+  description: string;
+  forksCount: number;
+  openIssuesCount: number;
+  url: string;
+  owner: User;
+}
+
+export interface RepositoryDetails {
+  forks: Fork[];
+  languages: string[];
+}
+
+export interface Pagination<T> {
+  items: T[];
+  totalCount: number;
+  incompleteResults: boolean;
+}
