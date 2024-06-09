@@ -6,10 +6,10 @@
 GitSearch is a React application built with Next.js that allows users to search for GitHub users and repositories using the GitHub API. The application provides an intuitive and responsive UI for displaying search results with infinite scrolling.
 
 ### Technologies Used
-- React with Next.js
-- Headless UI components library
-- Tailwind CSS for styling
-- Octokit SDK for API requests
+- [React with Next.js](https://nextjs.org/)
+- [HeadlessUI components library](https://headlessui.com/)
+- [Tailwind CSS for styling](https://tailwindcss.com/docs/adding-custom-styles)
+- [Octokit core SDK for API requests](https://www.npmjs.com/package/@octokit/core)
 
 ### How to Run the Project
 
@@ -76,5 +76,5 @@ app/                    # Main source code directory
 To contribute:
 1. Implement a Virtual list for improved performance with large data sets. Refer to [this npm package](https://www.npmjs.com/package/rc-virtual-list).
 2. Enhance error handling and user feedback.
-3. Add caching and state management with MobX.
+3. Check any @TODO comments.
 4. For MobX integration, refer to the [MobX documentation](https://mobx.js.org/README.html).
