@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Repository, User } from '@/app/lib/types';
-import Selector, { Option } from '@/app/components/Selector';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Repository, User, SearchOption } from '@/app/lib/types';
+import Selector from '@/app/components/Selector';
 
 import GitClient from './lib/api/gitClient';
 import Header from '@/app/components/Header';
 import Input from '@/app/components/Input';
-import RepoCard from '@/app/components/RepoCard';
+import SearchList from '@/app/components/SearchList';
+
 import { SEARCH_TYPES } from '@/app/lib/constants';
-import UserCard from '@/app/components/UserCard';
 import debounce from '@/app/utils/debounce';
 
 const CHARACTER_SEARCH_LIMIT = 3;
@@ -20,7 +20,7 @@ const searchOptions = [
 ];
 
 const Home = () => {
-  const [searchType, setSearchType] = useState<Option>(searchOptions[0]);
+  const [searchType, setSearchType] = useState<SearchOption>(searchOptions[0]);
   const [query, setQuery] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,7 +44,7 @@ const Home = () => {
     [],
   );
 
-  const handleSelectSearchTypeChange = useCallback((selectedOption: Option) => {
+  const handleSelectSearchTypeChange = useCallback((selectedOption: SearchOption) => {
     setResults([]);
     setLoading(false);
     setError('');
@@ -73,18 +73,14 @@ const Home = () => {
             repoName: query,
             page: 1,
           });
-        } else {
-          setError('Invalid search type');
         }
 
         if (response) {
-          console.log(response);
-
           setResults(response.items);
           // TODO: implement pagination
         }
       } catch (err) {
-        setError('Error fetching data');
+        setError('Error loading data. Please try again');
       } finally {
         setLoading(false);
       }
@@ -115,19 +111,12 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="flex h-[720px] flex-col space-y-6 overflow-x-hidden overflow-y-scroll px-6 py-2">
-          {searchType.name === SEARCH_TYPES.USERS &&
-            (results as User[]).map(user => (
-              <UserCard key={user.id} data={user} />
-            ))}
-          {searchType.name === SEARCH_TYPES.REPOSITORIES &&
-            (results as Repository[]).map(repo => (
-              <RepoCard key={repo.id} data={repo} />
-            ))}
-        </div>
-
-        {error && <div className="text-red-500">{error}</div>}
-        {loading && <div className="text-red-500">Loading...</div>}
+        <SearchList
+          loading={loading}
+          error={error}
+          searchType={searchType}
+          results={results}
+        />
       </div>
     </div>
   );

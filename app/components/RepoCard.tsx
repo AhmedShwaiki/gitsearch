@@ -28,7 +28,6 @@ function RepoCard<T extends Repository>({ data }: CardProps<T>) {
         owner: data.owner.name,
         name: data.name,
       });
-      console.log(details);
       setRepoDetails(details);
     } catch (err) {
       setError('Error fetching repository details');

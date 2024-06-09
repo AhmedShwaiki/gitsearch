@@ -9,6 +9,7 @@ function Header() {
           width={80}
           height={80}
           alt="GitSearch Logo"
+          priority
         />
         <h1 className="relative inline-block text-3xl">
           GitSearch

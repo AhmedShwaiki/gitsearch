@@ -202,6 +202,5 @@ class GitClient<T> {
 const config = {
   auth: process.env.GITHUB_TOKEN,
 };
-console.log(config);
 
 export default GitClient.use(Octokit, config);

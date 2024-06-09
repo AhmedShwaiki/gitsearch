@@ -6,28 +6,23 @@ import {
   Transition,
 } from '@headlessui/react';
 import { useEffect, useState } from 'react';
-
-export interface Option {
-  id: number;
-  name: string;
-  unavailable?: boolean;
-}
+import { SearchOption } from '@/app/lib/types';
 
 interface SelectorProps {
-  options: Option[];
-  selected: Option;
-  onSelect: (option: Option) => void;
+  options: SearchOption[];
+  selected: SearchOption;
+  onSelect: (option: SearchOption) => void;
   placeholder?: string;
 }
 
 function Selector({ options, selected, onSelect, placeholder }: SelectorProps) {
-  const [selectedOption, setSelectedOption] = useState<Option>(selected);
+  const [selectedOption, setSelectedOption] = useState<SearchOption>(selected);
 
   useEffect(() => {
     setSelectedOption(selected);
   }, [selected]);
 
-  const handleChange = (option: Option) => {
+  const handleChange = (option: SearchOption) => {
     onSelect(option);
     setSelectedOption(option);
   };

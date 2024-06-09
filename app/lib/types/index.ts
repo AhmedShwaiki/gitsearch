@@ -33,3 +33,9 @@ export interface Pagination<T> {
   totalCount: number;
   incompleteResults: boolean;
 }
+
+export interface SearchOption {
+  id: number;
+  name: string;
+  unavailable?: boolean;
+}
