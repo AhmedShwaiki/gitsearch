@@ -6,6 +6,8 @@ import {
   Transition,
 } from '@headlessui/react';
 import { useEffect, useState } from 'react';
+
+import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { SearchOption } from '@/app/lib/types';
 
 interface SelectorProps {
@@ -29,17 +31,18 @@ function Selector({ options, selected, onSelect, placeholder }: SelectorProps) {
 
   return (
     <Listbox value={selectedOption} onChange={handleChange}>
-      <div className="relative">
-        <ListboxButton className="w-56 rounded border border-foreground bg-primary p-2 text-left text-foreground transition-colors duration-200 hover:bg-secondary">
+      <div className="relative w-56">
+        <ListboxButton className="inline-flex items-center gap-2 rounded border border-foreground bg-primary p-2 text-left text-foreground transition-colors duration-200 hover:bg-secondary">
           {`${placeholder} ${selectedOption.name}`}
+          <ChevronDownIcon className="size-4 fill-foreground" />
         </ListboxButton>
         <Transition
-          enter="transition duration-200 ease-out"
-          enterFrom="transform scale-95 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-200 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-95 opacity-0"
+          enter="transition ease-out duration-75"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-100 scale-100"
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-95"
         >
           <ListboxOptions className="absolute mt-1 w-56 rounded border border-foreground bg-primary shadow-lg backdrop-blur-lg">
             {options.map(option => (

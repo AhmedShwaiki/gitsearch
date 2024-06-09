@@ -12,7 +12,7 @@ import Selector from '@/app/components/Selector';
 import debounce from '@/app/utils/debounce';
 
 const CHARACTER_SEARCH_LIMIT = 3;
-const DEBOUNCE_DELAY = 300;
+const DEBOUNCE_DELAY = 1000;
 const searchOptions = [
   { id: 1, name: SEARCH_TYPES.USERS },
   { id: 2, name: SEARCH_TYPES.REPOSITORIES },
@@ -28,18 +28,27 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasMoreResults, setHasMoreResults] = useState<boolean>(false);
 
+  const setQueryDebounced = useCallback(
+    debounce(value => {
+      setQuery(value);
+    }, DEBOUNCE_DELAY),
+    [],
+  );
+
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
+      setResults([]);
       setLoading(false);
       setError('');
+      setQuery('');
 
       // TODO: implement more validation on the raw string
       setInputValue(newValue);
 
       const trimmedValue = newValue.trim();
       if (trimmedValue.length >= CHARACTER_SEARCH_LIMIT) {
-        debounce(() => setQuery(trimmedValue), DEBOUNCE_DELAY)();
+        setQueryDebounced(trimmedValue);
       }
     },
     [],
@@ -83,11 +92,11 @@ const Home = () => {
           });
         }
 
-        if (response) {
+        if (response && response.items.length === 0) {
+          setError('No results found');
+        } else if (response) {
           setResults(prevResults => [...prevResults, ...response.items]);
           setHasMoreResults(!response.incompleteResults);
-        } else {
-          setError('No results found');
         }
       } catch (err) {
         setError('Error loading data. Please try again');
@@ -99,12 +108,16 @@ const Home = () => {
     fetchData();
   }, [query, searchType, currentPage]);
 
+  const debouncedSetCurrentPage = useCallback(
+    debounce(prevPage => {
+      setCurrentPage(prevPage + 1);
+    }, DEBOUNCE_DELAY),
+    [],
+  );
+
   const handleOnReachScrollLimit = useCallback(() => {
     if (!loading && hasMoreResults) {
-      debounce(
-        () => setCurrentPage(prevPage => prevPage + 1),
-        DEBOUNCE_DELAY,
-      )();
+      debouncedSetCurrentPage(currentPage);
     }
   }, [loading, hasMoreResults]);
 

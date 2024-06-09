@@ -13,8 +13,8 @@ interface InputProps {
 function Input({
   value,
   placeholder = 'Search Github',
-  disabled = false,
-  autoFocus = false,
+  disabled,
+  autoFocus,
   onChange,
 }: InputProps) {
   const handleOnChange = useCallback(
