@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "testrepo",
+      "owner": {
+        "id": 1,
+        "login": "owner",
+        "avatar_url": "avatar_url",
+        "html_url": "profile_url"
+      },
+      "forks_count": 0,
+      "open_issues_count": 0,
+      "html_url": "repo_url",
+      "description": "repo_description",
+      "language": "JavaScript"
+    }
+  ],
+  "total_count": 1,
+  "incomplete_results": false
+}
